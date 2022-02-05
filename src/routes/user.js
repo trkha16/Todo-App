@@ -6,6 +6,6 @@ router.route('/')
     .get(UserController.getAllUsers)
 router.route('/:userID')
     .get(UserController.getUserById)
-    .post(UserController.updateUserById)
+    .put(UserController.updateUserById)
     .delete(UserController.deleteUserById)
 module.exports = router

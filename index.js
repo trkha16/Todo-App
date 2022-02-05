@@ -15,6 +15,7 @@ mongoose.connect('mongodb+srv://trkha:z8Wqa8kpNrMFIAqc@nodejs.wzot8.mongodb.net/
 const app = express()
 
 const userRoute = require('./src/routes/user')
+const todoRouter = require('./src/routes/todo')
 
 // Middlewares
 app.use(logger('dev'))
@@ -22,6 +23,7 @@ app.use(bodyParser.json())
 
 // Routes
 app.use('/users', userRoute)
+app.use('/users', todoRouter)
 
 app.get('/', (req, res, next) => {
     return res.status(200).json({

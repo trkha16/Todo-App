@@ -1,29 +1,21 @@
 const User = require('../models/User')
 
 // Get all users
-const getAllUsers = (req, res, next) => {
-    User.find({})
-    .then((data) => {
-        return res.status(200).json(data)
-    })
-    .catch(err => {
-        return res.json(err)
-    })
+const getAllUsers = async (req, res, next) => {
+    const user = await User.find()
+
+    return res.status(200).json(user);
 }
 
 // Get user by id
-const getUserById = (req, res, next) => {
+const getUserById = async (req, res, next) => {
     const { userID } = req.params;
 
-    User.find({
+    const user = await User.find({
         _id: userID
     })
-    .then((data) => {
-        return res.status(200).json(data)
-    })
-    .catch(err => {
-        return res.json(err)
-    })
+
+    return res.status(200).json(user);
 }
 
 // Update user by id
@@ -33,11 +25,12 @@ const updateUserById = (req, res, next) => {
 
     User.findByIdAndUpdate(userID, user)
     .then(() => {
-        return res.status(200).json('Thanh cong')
+        return res.status(200).json({success: true})
     })
-    .catch(err => {
+    .catch((err) => {
         return res.json(err)
     })
+
 }
 
 // Delete user by Id
