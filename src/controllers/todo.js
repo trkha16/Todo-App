@@ -27,7 +27,37 @@ const createTodo = async (req, res, next) => {
     return res.status(200).json({success: true})
 }
 
+// Update todo by todoId
+const updateTodoById = (req, res, next) => {
+    const { todoID } = req.params;
+    const newTodo = req.body;
+    
+    Todo.findByIdAndUpdate(todoID, newTodo)
+    .then(() => {
+        return res.status(200).json({success: true})
+    })
+    .catch((err) => {
+        return res.json(err)
+    })
+    
+}
+
+// Delete todo by todoID
+const deleteUserById = (req, res, next) => {
+    const { todoID } = req.params;
+    
+    Todo.findByIdAndRemove(todoID)
+    .then(() => {
+        return res.status(200).json('Thanh cong')
+    })
+    .catch(err => {
+        return res.json(err)
+    })
+}
+
 module.exports = {
     getTodoByUserId,
     createTodo,
+    updateTodoById,
+    deleteUserById,
 }

@@ -8,4 +8,6 @@ router.route('/:userID')
     .get(UserController.getUserById)
     .put(UserController.updateUserById)
     .delete(UserController.deleteUserById)
+router.route('/signup')
+    .post(UserController.signUp)
 module.exports = router

@@ -8,14 +8,16 @@ const getAllUsers = async (req, res, next) => {
 }
 
 // Get user by id
-const getUserById = async (req, res, next) => {
+const getUserById = (req, res, next) => {
     const { userID } = req.params;
 
-    const user = await User.find({
-        _id: userID
+    User.findById(userID)
+    .then((data) => {
+        return res.status(200).json(data);
     })
-
-    return res.status(200).json(user);
+    .catch(err => {
+        return res.json(err)
+    })
 }
 
 // Update user by id
@@ -33,11 +35,24 @@ const updateUserById = (req, res, next) => {
 
 }
 
+// Create user
+const signUp = (req, res, next) => {
+    const user = req.body
+
+    User.create(user)
+    .then((data) => {
+        return res.status(200).json('Thanh cong')
+    })
+    .catch(err => {
+        return res.json(err)
+    })
+}
+
 // Delete user by Id
 const deleteUserById = (req, res, next) => {
     const { userID } = req.params;
     
-    User.deleteOne({userID})
+    User.findByIdAndDelete(userID)
     .then(() => {
         return res.status(200).json('Thanh cong')
     })
@@ -51,4 +66,5 @@ module.exports = {
     getUserById,
     updateUserById,
     deleteUserById,
+    signUp,
 }
