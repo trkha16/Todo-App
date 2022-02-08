@@ -1,10 +1,14 @@
 const User = require('../models/User')
 
 // Get all users
-const getAllUsers = async (req, res, next) => {
-    const user = await User.find()
-
-    return res.status(200).json(user);
+const getAllUsers = (req, res, next) => {
+    User.find()
+    .then((data) => {
+        return res.status(200).json(data);
+    })
+    .catch(err => {
+        return res.json(err)
+    })
 }
 
 // Get user by id

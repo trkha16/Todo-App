@@ -2,29 +2,43 @@ const Todo = require('../models/Todo')
 const User = require('../models/User')
 
 // get todo by userId
-const getTodoByUserId = async (req, res, next) => {
+const getTodoByUserId = (req, res, next) => {
     const { userID } = req.params;
 
-    const user = await User.findById(userID).populate('todos')
-
-    return res.status(200).json(user.todos);
+    Todo.find({
+        userId: userID,
+        deleted: false
+    })
+    .then((data) => {
+        return res.status(200).json(data);
+    })
+    .catch((err) => {
+        return res.json(err)
+    })
 }
 
 // add todo to user
 const createTodo = async (req, res, next) => {
-    const { userID } = req.params;
+    try{
+        const { userID } = req.params;
 
-    const todo = new Todo(req.body);
+        const todo = new Todo(req.body);
 
-    const user = await User.findById(userID)
+        todo.userId = userID
 
-    await todo.save()
+        const user = await User.findById(userID)
 
-    user.todos.push(todo._id);
+        await todo.save()
 
-    await user.save()
+        user.todos.push(todo._id);
 
-    return res.status(200).json({success: true})
+        await user.save()
+
+        return res.status(200).json({success: true})
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
 }
 
 // Update todo by todoId
@@ -39,15 +53,17 @@ const updateTodoById = (req, res, next) => {
     .catch((err) => {
         return res.json(err)
     })
-    
+
 }
 
 // Delete todo by todoID
-const deleteUserById = (req, res, next) => {
+const deleteTodoById = (req, res, next) => {
     const { todoID } = req.params;
-    
-    Todo.findByIdAndRemove(todoID)
-    .then(() => {
+
+    Todo.findById(todoID)
+    .then((data) => {
+        data.deleted = true
+        data.save()
         return res.status(200).json('Thanh cong')
     })
     .catch(err => {
@@ -59,5 +75,5 @@ module.exports = {
     getTodoByUserId,
     createTodo,
     updateTodoById,
-    deleteUserById,
+    deleteTodoById,
 }

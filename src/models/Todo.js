@@ -7,6 +7,13 @@ const TodoSchema = new Schema({
     },
     detail: {
         type: String
+    },
+    deleted: {
+        type: Boolean,
+        default: false
+    },
+    userId: {
+        type: String
     }
 }, {
     collection: 'todo'

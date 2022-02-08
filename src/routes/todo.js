@@ -7,5 +7,5 @@ router.route('/:userID/todos')
     .post(TodoController.createTodo)
 router.route('/:todoID/todo')
     .put(TodoController.updateTodoById)
-    .delete(TodoController.deleteUserById)
+    .delete(TodoController.deleteTodoById)
 module.exports = router

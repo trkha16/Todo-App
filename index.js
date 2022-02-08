@@ -2,9 +2,10 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const logger = require('morgan')
 const mongoose = require('mongoose')
+require('dotenv').config()
 
 // setup connect mongodb
-mongoose.connect('mongodb+srv://trkha:z8Wqa8kpNrMFIAqc@nodejs.wzot8.mongodb.net/testNodejs?retryWrites=true&w=majority')
+mongoose.connect(process.env.DATABASE_URL)
 .then(() => {
     console.log('Connect database mongodb!')
 })
