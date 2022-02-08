@@ -2,6 +2,7 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const logger = require('morgan')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 // setup connect mongodb
@@ -17,6 +18,7 @@ const app = express()
 
 const userRoute = require('./src/routes/user')
 const todoRouter = require('./src/routes/todo')
+const User = require('./src/models/User')
 
 // Middlewares
 app.use(logger('dev'))
@@ -26,28 +28,30 @@ app.use(bodyParser.json())
 app.use('/users', userRoute)
 app.use('/users', todoRouter)
 
-app.get('/', (req, res, next) => {
-    return res.status(200).json({
-        message: 'Server is OKK!'
+// Dang nhap
+app.post('/login', (req, res, next) => {
+    var {email, password} = req.body
+
+    User.findOne({
+        email: email,
+        password: password
     })
-})
-
-// Error
-app.use((req, res, next) => {
-    const err = new Error('Not Found')
-    err.status = 404
-    next(err)
-})
-
-// Error handler function
-app.use((req, res) => {
-    const error = app.get('env') === 'development' ? err : {}
-    const status = err.status || 500
-
-    return res.status(status).json({
-        error: {
-            message: err.message
+    .then((data) => {
+        if (data){
+            const token = jwt.sign({
+                _id: data._id
+            }, process.env.SECRET)
+            return res.json({
+                message: 'Dang nhap thanh cong',
+                token: token
+            })
         }
+        else{
+            return res.json('Dang nhap that bai')
+        }
+    })
+    .catch(err => {
+        return res.json(err)
     })
 })
 

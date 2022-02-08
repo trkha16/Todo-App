@@ -17,6 +17,10 @@ const UserSchema = new Schema({
         type: String,
         require: true
     },
+    roles: {
+        type: Array,
+        default: 'VIEWER'
+    },
     todos: [{
         type: Schema.Types.ObjectId,
         ref: 'Todo'

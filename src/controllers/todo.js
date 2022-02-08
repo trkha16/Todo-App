@@ -64,7 +64,7 @@ const deleteTodoById = (req, res, next) => {
     .then((data) => {
         data.deleted = true
         data.save()
-        return res.status(200).json('Thanh cong')
+        return res.status(200).json({success: true})
     })
     .catch(err => {
         return res.json(err)

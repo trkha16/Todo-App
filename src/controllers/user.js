@@ -44,8 +44,8 @@ const signUp = (req, res, next) => {
     const user = req.body
 
     User.create(user)
-    .then((data) => {
-        return res.status(200).json('Thanh cong')
+    .then(() => {
+        return res.status(200).json({success: true})
     })
     .catch(err => {
         return res.json(err)
@@ -58,7 +58,7 @@ const deleteUserById = (req, res, next) => {
     
     User.findByIdAndDelete(userID)
     .then(() => {
-        return res.status(200).json('Thanh cong')
+        return res.status(200).json({success: true})
     })
     .catch(err => {
         return res.json(err)
