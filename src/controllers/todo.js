@@ -1,8 +1,8 @@
 const Todo = require('../models/Todo');
 const User = require('../models/User');
 
-// get todo by userId
-const getTodoByUserId = (req, res, next) => {
+// get all todos by userId
+const getTodosByUserId = (req, res, next) => {
     const { userID } = req.params;
 
     Todo.find({
@@ -10,7 +10,16 @@ const getTodoByUserId = (req, res, next) => {
         deleted: false,
     })
         .then((data) => {
-            return res.status(200).json(data);
+            const result = [];
+            for (let i = 0; i < data.length; i++) {
+                result[i] = {
+                    id: data[i]._id,
+                    title: data[i].title,
+                    detail: data[i].detail,
+                    deadline: data[i].deadline,
+                };
+            }
+            return res.status(200).json(result);
         })
         .catch((err) => {
             return res.json(err);
@@ -70,7 +79,7 @@ const deleteTodoById = (req, res, next) => {
 };
 
 module.exports = {
-    getTodoByUserId,
+    getTodosByUserId,
     createTodo,
     updateTodoById,
     deleteTodoById,

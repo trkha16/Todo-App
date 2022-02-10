@@ -4,7 +4,7 @@ const TodoController = require('../controllers/todo');
 
 router
     .route('/:userID/todos')
-    .get(TodoController.getTodoByUserId)
+    .get(TodoController.getTodosByUserId)
     .post(TodoController.createTodo);
 router
     .route('/:todoID/todo')

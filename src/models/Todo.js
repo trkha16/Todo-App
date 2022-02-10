@@ -18,6 +18,7 @@ const TodoSchema = new Schema(
         },
         deadline: {
             type: String,
+            default: null
         },
         userId: {
             type: String,
