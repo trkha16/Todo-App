@@ -1,41 +1,26 @@
+const mysqlDB = require('../database/mysqlConnection');
 const User = require('../models/User');
 
 // Get all users
-const getAllUsers = (req, res, next) => {
-    User.find()
-        .then((data) => {
-            const result = [];
-            for (let i = 0; i < data.length; i++) {
-                result[i] = {
-                    id: data[i]._id,
-                    firstName: data[i].firstName,
-                    lastName: data[i].lastName,
-                    email: data[i].email,
-                };
-            }
-            return res.status(200).json(result);
-        })
-        .catch((err) => {
-            return res.json(err);
-        });
+const getAllUsers = (req, res) => {
+    const query = 'SELECT id, firstname, lastname, email, username FROM user;';
+    mysqlDB.query(query, function (err, data) {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
 };
 
 // Get user by id
 const getUserById = (req, res, next) => {
     const { userID } = req.params;
 
-    User.findById(userID)
-        .then((data) => {
-            return res.status(200).json({
-                id: data._id,
-                firstname: data.firstName,
-                lastname: data.lastName,
-                email: data.email,
-            });
-        })
-        .catch((err) => {
-            return res.json(err);
-        });
+    const query =
+        'select id, firstname, lastname, email, username from user where id = ?;';
+
+    mysqlDB.query(query, [userID], (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
 };
 
 // Update user by id
@@ -82,13 +67,14 @@ const signUp = (req, res, next) => {
 const deleteUserById = (req, res, next) => {
     const { userID } = req.params;
 
-    User.findByIdAndDelete(userID)
-        .then(() => {
-            return res.status(200).json({ success: true });
-        })
-        .catch((err) => {
-            return res.json(err);
-        });
+    const query = 'delete from user where id = ?';
+
+    mysqlDB.query(query, userID, (err, data) => {
+        if (err) return res.json(err);
+        if (data.affectedRows === 0)
+            return res.json({ message: `Khong ton tai id: ${userID}` });
+        return res.json({ message: 'success' });
+    });
 };
 
 module.exports = {
