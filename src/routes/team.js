@@ -7,4 +7,5 @@ router
     .get(TeamController.getAllTeams)
     .post(TeamController.createTeam);
 router.route('/:userID/team/:teamID').get(TeamController.getTeamByID);
+
 module.exports = router;

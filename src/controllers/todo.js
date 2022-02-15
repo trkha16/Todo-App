@@ -1,52 +1,33 @@
-const Todo = require('../models/Todo');
-const User = require('../models/User');
+const mysqlDB = require('../database/mysqlConnection');
 
 // get all todos by userId
 const getTodosByUserId = (req, res, next) => {
     const { userID } = req.params;
 
-    Todo.find({
-        userId: userID,
-        deleted: false,
-    })
-        .then((data) => {
-            const result = [];
-            for (let i = 0; i < data.length; i++) {
-                result[i] = {
-                    id: data[i]._id,
-                    title: data[i].title,
-                    detail: data[i].detail,
-                    deadline: data[i].deadline,
-                };
-            }
-            return res.status(200).json(result);
-        })
-        .catch((err) => {
-            return res.json(err);
-        });
+    const query =
+        'select id, title, detail from todo where userId = ? and deleted = false;';
+
+    mysqlDB.query(query, userID, function (err, data) {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
 };
 
-// add todo to user
-const createTodo = async (req, res, next) => {
-    try {
-        const { userID } = req.params;
+// create todo
+const createTodo = (req, res, next) => {
+    const { userID } = req.params;
+    const todo = req.body;
 
-        const todo = new Todo(req.body);
+    let values = {
+        title: todo.title,
+        detail: todo.detail,
+        userId: userID,
+    };
 
-        todo.userId = userID;
-
-        const user = await User.findById(userID);
-
-        await todo.save();
-
-        user.todos.push(todo._id);
-
-        await user.save();
-
-        return res.status(200).json({ success: true });
-    } catch (err) {
-        res.status(500).json(err);
-    }
+    mysqlDB.query('insert into todo set ?', values, (err, data) => {
+        if (err) return res.json(err);
+        return res.json({ message: 'success' });
+    });
 };
 
 // Update todo by todoId
@@ -67,15 +48,12 @@ const updateTodoById = (req, res, next) => {
 const deleteTodoById = (req, res, next) => {
     const { todoID } = req.params;
 
-    Todo.findById(todoID)
-        .then((data) => {
-            data.deleted = true;
-            data.save();
-            return res.status(200).json({ success: true });
-        })
-        .catch((err) => {
-            return res.json(err);
-        });
+    const query = 'update todo set deleted = true where id = ?';
+
+    mysqlDB.query(query, todoID, (err, data) => {
+        if (err) res.json(err);
+        res.json({ message: 'success' });
+    });
 };
 
 module.exports = {

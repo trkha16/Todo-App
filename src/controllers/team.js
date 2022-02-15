@@ -1,6 +1,4 @@
-const Todo = require('../models/Todo');
-const User = require('../models/User');
-const Team = require('../models/Team');
+const mysqlDB = require('../database/mysqlConnection');
 
 // Create team
 const createTeam = async (req, res, next) => {

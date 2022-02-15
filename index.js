@@ -14,10 +14,12 @@ app.use(bodyParser.json());
 const userRoute = require('./src/routes/user');
 const todoRouter = require('./src/routes/todo');
 const teamRouter = require('./src/routes/team');
+const accountRouter = require('./src/routes/account');
 
 app.use('/users', userRoute);
 app.use('/users', todoRouter);
 app.use('/users', teamRouter);
+app.use('/', accountRouter);
 
 const port = app.get('port') || 3000;
 app.listen(port, () => {
